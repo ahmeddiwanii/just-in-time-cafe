@@ -7,61 +7,99 @@ import { HERO_SLIDES } from '@/lib/site-images'
 import styles from './Hero.module.css'
 
 const SLIDE_COUNT = HERO_SLIDES.length
-const LOOP_SLIDES = [
-  HERO_SLIDES[SLIDE_COUNT - 1],
-  ...HERO_SLIDES,
-  HERO_SLIDES[0],
-]
-const LOOP_STEP = 100 / LOOP_SLIDES.length
+/** Clone first slide at end so last → first always swipes forward */
+const LOOP_SLIDES = [...HERO_SLIDES, HERO_SLIDES[0]]
 const AUTO_PLAY_MS = 4500
 const AUTO_PAUSE_MS = 9000
 
 export default function Hero() {
-  const [loopIndex, setLoopIndex] = useState(1)
+  const [loopIndex, setLoopIndex] = useState(0)
   const [animate, setAnimate] = useState(true)
+  const [slideWidth, setSlideWidth] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
   const watchRef = useRef<HTMLDivElement>(null)
+  const viewportRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const loopIndexRef = useRef(0)
   const pauseUntilRef = useRef(0)
+
+  loopIndexRef.current = loopIndex
+
+  useEffect(() => {
+    const el = viewportRef.current
+    if (!el) return
+
+    const measure = () => setSlideWidth(el.getBoundingClientRect().width)
+    measure()
+
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   const bumpAutoPause = useCallback(() => {
     pauseUntilRef.current = Date.now() + AUTO_PAUSE_MS
   }, [])
 
+  const jumpWithoutAnimation = useCallback((index: number) => {
+    setAnimate(false)
+    loopIndexRef.current = index
+    setLoopIndex(index)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setAnimate(true))
+    })
+  }, [])
+
   const nextSlide = useCallback(() => {
     bumpAutoPause()
+    if (loopIndexRef.current >= SLIDE_COUNT) return
     setAnimate(true)
-    setLoopIndex((prev) => prev + 1)
+    setLoopIndex((prev) => {
+      const next = prev + 1
+      loopIndexRef.current = next
+      return next
+    })
   }, [bumpAutoPause])
 
   const prevSlide = useCallback(() => {
     bumpAutoPause()
-    setAnimate(true)
-    setLoopIndex((prev) => prev - 1)
-  }, [bumpAutoPause])
-
-  const handleTrackTransitionEnd = useCallback(() => {
-    if (loopIndex === LOOP_SLIDES.length - 1) {
-      setAnimate(false)
-      setLoopIndex(1)
-    } else if (loopIndex === 0) {
-      setAnimate(false)
-      setLoopIndex(SLIDE_COUNT)
+    if (loopIndexRef.current === 0) {
+      jumpWithoutAnimation(SLIDE_COUNT - 1)
+      return
     }
-  }, [loopIndex])
-
-  useEffect(() => {
-    if (animate) return
-    const id = requestAnimationFrame(() => {
-      requestAnimationFrame(() => setAnimate(true))
+    setAnimate(true)
+    setLoopIndex((prev) => {
+      const next = prev - 1
+      loopIndexRef.current = next
+      return next
     })
-    return () => cancelAnimationFrame(id)
-  }, [animate])
+  }, [bumpAutoPause, jumpWithoutAnimation])
+
+  const handleTrackTransitionEnd = useCallback(
+    (e: React.TransitionEvent<HTMLDivElement>) => {
+      if (e.target !== trackRef.current) return
+      if (e.propertyName !== 'transform') return
+
+      if (loopIndexRef.current === SLIDE_COUNT) {
+        jumpWithoutAnimation(0)
+      }
+    },
+    [jumpWithoutAnimation]
+  )
 
   useSwipeElement(watchRef, {
     onSwipeLeft: nextSlide,
     onSwipeRight: prevSlide,
     threshold: 30,
   })
+
+  useEffect(() => {
+    if (loopIndex !== SLIDE_COUNT) return
+    const timer = window.setTimeout(() => {
+      if (loopIndexRef.current === SLIDE_COUNT) jumpWithoutAnimation(0)
+    }, 920)
+    return () => window.clearTimeout(timer)
+  }, [loopIndex, jumpWithoutAnimation])
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -76,12 +114,15 @@ export default function Hero() {
     <section className={styles.heroShell}>
       <div className={styles.hero}>
       {/* Food carousel — behind the PNG, shows through transparent watch hole */}
-      <div className={styles.watchCarousel}>
+      <div ref={viewportRef} className={styles.watchCarousel}>
         <div
+          ref={trackRef}
           className={`${styles.carouselTrack} ${animate ? '' : styles.carouselTrackInstant}`}
           style={{
-            width: `${LOOP_SLIDES.length * 100}%`,
-            transform: `translateX(-${loopIndex * LOOP_STEP}%)`,
+            transform:
+              slideWidth > 0
+                ? `translate3d(-${loopIndex * slideWidth}px, 0, 0)`
+                : undefined,
           }}
           onTransitionEnd={handleTrackTransitionEnd}
         >
@@ -89,7 +130,7 @@ export default function Hero() {
             <div
               key={`${slide.src}-${i}`}
               className={styles.slide}
-              style={{ flex: `0 0 ${LOOP_STEP}%` }}
+              style={slideWidth > 0 ? { width: slideWidth, flexShrink: 0 } : undefined}
             >
               <div className={styles.imageWrap}>
                 <img
