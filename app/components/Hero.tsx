@@ -6,12 +6,19 @@ import { useSwipeElement } from '@/lib/use-swipe'
 import { HERO_SLIDES } from '@/lib/site-images'
 import styles from './Hero.module.css'
 
-const SLIDE_STEP = 100 / HERO_SLIDES.length
+const SLIDE_COUNT = HERO_SLIDES.length
+const LOOP_SLIDES = [
+  HERO_SLIDES[SLIDE_COUNT - 1],
+  ...HERO_SLIDES,
+  HERO_SLIDES[0],
+]
+const LOOP_STEP = 100 / LOOP_SLIDES.length
 const AUTO_PLAY_MS = 4500
 const AUTO_PAUSE_MS = 9000
 
 export default function Hero() {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [loopIndex, setLoopIndex] = useState(1)
+  const [animate, setAnimate] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const watchRef = useRef<HTMLDivElement>(null)
   const pauseUntilRef = useRef(0)
@@ -22,13 +29,33 @@ export default function Hero() {
 
   const nextSlide = useCallback(() => {
     bumpAutoPause()
-    setCurrentIndex((prev) => (prev + 1) % HERO_SLIDES.length)
+    setAnimate(true)
+    setLoopIndex((prev) => prev + 1)
   }, [bumpAutoPause])
 
   const prevSlide = useCallback(() => {
     bumpAutoPause()
-    setCurrentIndex((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)
+    setAnimate(true)
+    setLoopIndex((prev) => prev - 1)
   }, [bumpAutoPause])
+
+  const handleTrackTransitionEnd = useCallback(() => {
+    if (loopIndex === LOOP_SLIDES.length - 1) {
+      setAnimate(false)
+      setLoopIndex(1)
+    } else if (loopIndex === 0) {
+      setAnimate(false)
+      setLoopIndex(SLIDE_COUNT)
+    }
+  }, [loopIndex])
+
+  useEffect(() => {
+    if (animate) return
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setAnimate(true))
+    })
+    return () => cancelAnimationFrame(id)
+  }, [animate])
 
   useSwipeElement(watchRef, {
     onSwipeLeft: nextSlide,
@@ -39,11 +66,11 @@ export default function Hero() {
   useEffect(() => {
     const timer = window.setInterval(() => {
       if (Date.now() < pauseUntilRef.current) return
-      setCurrentIndex((prev) => (prev + 1) % HERO_SLIDES.length)
+      nextSlide()
     }, AUTO_PLAY_MS)
 
     return () => window.clearInterval(timer)
-  }, [])
+  }, [nextSlide])
 
   return (
     <section className={styles.heroShell}>
@@ -51,11 +78,19 @@ export default function Hero() {
       {/* Food carousel — behind the PNG, shows through transparent watch hole */}
       <div className={styles.watchCarousel}>
         <div
-          className={styles.carouselTrack}
-          style={{ transform: `translateX(-${currentIndex * SLIDE_STEP}%)` }}
+          className={`${styles.carouselTrack} ${animate ? '' : styles.carouselTrackInstant}`}
+          style={{
+            width: `${LOOP_SLIDES.length * 100}%`,
+            transform: `translateX(-${loopIndex * LOOP_STEP}%)`,
+          }}
+          onTransitionEnd={handleTrackTransitionEnd}
         >
-          {HERO_SLIDES.map((slide) => (
-            <div key={slide.src} className={styles.slide}>
+          {LOOP_SLIDES.map((slide, i) => (
+            <div
+              key={`${slide.src}-${i}`}
+              className={styles.slide}
+              style={{ flex: `0 0 ${LOOP_STEP}%` }}
+            >
               <div className={styles.imageWrap}>
                 <img
                   src={slide.src}
@@ -178,6 +213,7 @@ export default function Hero() {
             <a href="#menu" onClick={() => setMenuOpen(false)}>Menu</a>
             <a href="#gallery" onClick={() => setMenuOpen(false)}>Galerie</a>
             <a href="#about" onClick={() => setMenuOpen(false)}>À propos</a>
+            <a href="#map" onClick={() => setMenuOpen(false)}>Carte</a>
             <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
           </nav>
         )}

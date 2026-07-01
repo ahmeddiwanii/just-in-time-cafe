@@ -4,8 +4,9 @@ import Image from 'next/image';
 import Hero from './components/Hero';
 import SiteNav from './components/SiteNav';
 import MenuSection from './components/MenuSection';
+import MapSection from './components/MapSection';
 import { GALLERY_IMAGES, SITE_IMAGES } from '@/lib/site-images';
-import { MapPin, Phone, Clock, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
@@ -136,32 +137,19 @@ export default function Home() {
         </div>
       </section>
 
+      <MapSection />
+
       {/* Contact Section */}
       <section id="contact" className="py-24 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-              Nous Rendre Visite
+              Nous Contacter
             </h2>
             <div className="w-20 h-1 bg-accent mx-auto" />
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="bg-card border border-border p-8 rounded-lg text-center hover:border-accent transition-all">
-              <MapPin className="w-8 h-8 text-accent mx-auto mb-4" />
-              <h3 className="font-serif font-bold mb-2">Adresse</h3>
-              <p className="text-sm text-muted-foreground">Beni Khalled, Tunisie</p>
-            </div>
-            <div className="bg-card border border-border p-8 rounded-lg text-center hover:border-accent transition-all">
-              <Phone className="w-8 h-8 text-accent mx-auto mb-4" />
-              <h3 className="font-serif font-bold mb-2">Téléphone</h3>
-              <p className="text-sm text-muted-foreground">+216 XX XXX XXXX</p>
-            </div>
-            <div className="bg-card border border-border p-8 rounded-lg text-center hover:border-accent transition-all">
-              <Clock className="w-8 h-8 text-accent mx-auto mb-4" />
-              <h3 className="font-serif font-bold mb-2">Horaires</h3>
-              <p className="text-sm text-muted-foreground">9h - 23h tous les jours</p>
-            </div>
+            <p className="text-muted-foreground mt-4 max-w-lg mx-auto">
+              Une question, une réservation ou un événement ? Écrivez-nous — nous vous répondrons rapidement.
+            </p>
           </div>
 
           <div className="bg-card border border-border p-8 rounded-lg">
@@ -225,6 +213,7 @@ export default function Home() {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><a href="#" className="hover:text-accent transition">Confidentialité</a></li>
                 <li><a href="#" className="hover:text-accent transition">Conditions</a></li>
+                <li><a href="#map" className="hover:text-accent transition">Nous trouver</a></li>
                 <li><a href="#contact" className="hover:text-accent transition">Contact</a></li>
               </ul>
             </div>
