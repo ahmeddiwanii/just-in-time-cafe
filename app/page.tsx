@@ -89,9 +89,18 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { name: 'Sarah M.', text: 'Une expérience extraordinaire. Chaque détail est une perfection.' },
-              { name: 'Jean P.', text: 'Le café seul vaut le détour. Simplement magnifique.' },
-              { name: 'Hassan B.', text: 'Un véritable joyau à Beni Khalled. Je recommande vivement.' },
+              {
+                name: 'Ahmed Charkaoui',
+                text: 'Un bon changement avec un menu très varié chaque jour à prix raisonnable de 15 à 20d. Mais le seul bémol c’est que les plats manquent un peu de goût d’assaisonnement d’épices.',
+              },
+              {
+                name: 'Ikbell Atrache',
+                text: 'Ce qui est bien c’est qu’il y a de l’animation là où les enfants peuvent jouer.',
+              },
+              {
+                name: 'Richard Steigmann',
+                text: 'Un petit restaurant sympathique avec une terrasse ombragée. La cuisine est plutôt bonne et la limonade très rafraîchissante.',
+              },
             ].map((testimonial, i) => (
               <div key={i} className="bg-background border border-border p-8 rounded-lg">
                 <div className="flex gap-1 mb-4">
