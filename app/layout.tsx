@@ -66,8 +66,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="fr" className="dark">
-      <body className={`${playfair.variable} ${dancing.variable} ${poppins.variable} font-sans antialiased bg-background text-foreground`}>
+    <html lang="fr" className="dark" suppressHydrationWarning>
+      <head>
+        {/* Prevent Dark Reader / similar extensions from mutating DOM and crashing React */}
+        <meta name="darkreader-lock" />
+        <meta name="color-scheme" content="dark" />
+      </head>
+      <body
+        className={`${playfair.variable} ${dancing.variable} ${poppins.variable} font-sans antialiased bg-background text-foreground`}
+        suppressHydrationWarning
+      >
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

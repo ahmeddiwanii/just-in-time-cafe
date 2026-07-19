@@ -171,7 +171,7 @@
   position: relative;
   perspective: 1400px;
   width: 100%;
-  height: clamp(420px, 62vh, 540px);
+  height: clamp(480px, 68vh, 620px);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -432,7 +432,7 @@
   }
 
   .book {
-    height: clamp(460px, 58vh, 580px);
+    height: clamp(520px, 66vh, 680px);
   }
 
   .categoryTab {
@@ -448,11 +448,31 @@
 /* ── Large tablet / small desktop ── */
 @media (min-width: 1024px) {
   .container {
-    max-width: 720px;
+    max-width: 760px;
   }
 
   .bookStage {
-    max-width: 520px;
+    max-width: 560px;
+  }
+
+  .book {
+    height: clamp(580px, 72vh, 760px);
+  }
+
+  .page {
+    padding: 1.6rem 1.4rem 1.2rem 1.55rem;
+  }
+
+  .item {
+    margin-bottom: 0.85rem;
+  }
+
+  .itemName {
+    font-size: 1.02rem;
+  }
+
+  .itemNote {
+    font-size: 0.78rem;
   }
 
   .categoryStrip {

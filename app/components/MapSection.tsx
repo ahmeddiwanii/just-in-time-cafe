@@ -7,6 +7,7 @@ import {
   DIRECTIONS,
   MAP_EMBED_URL,
   VENUE,
+  WHATSAPP,
   isVenueOpenNow,
 } from '@/lib/site-location'
 import styles from './MapSection.module.css'
@@ -194,6 +195,16 @@ export default function MapSection() {
                     {VENUE.phone}
                   </a>
                   <p className={styles.infoSub}>Réservations &amp; renseignements</p>
+                  <div className={styles.copyRow}>
+                    <a
+                      href={WHATSAPP.reserve}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.copyBtn}
+                    >
+                      Réserver sur WhatsApp
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>

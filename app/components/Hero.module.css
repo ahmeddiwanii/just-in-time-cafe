@@ -222,16 +222,20 @@
 }
 
 .ctaPrimary {
-  background: linear-gradient(180deg, #e0b872 0%, #c9953f 100%);
-  color: #fff;
+  background: linear-gradient(180deg, #e8c07a 0%, #d4a04a 48%, #c08a38 100%);
+  color: #1a1208;
   border: none;
-  box-shadow: 0 2px 12px rgba(201, 149, 63, 0.35);
+  box-shadow:
+    0 2px 14px rgba(201, 149, 63, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .ctaSecondary {
-  background-color: rgba(10, 8, 6, 0.35);
-  color: #f0e9dd;
-  border: 1.5px solid rgba(216, 168, 97, 0.55);
+  background-color: rgba(10, 8, 6, 0.4);
+  color: #f7f1e6;
+  border: 1.5px solid rgba(216, 168, 97, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .watchSpacer {
@@ -301,7 +305,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center center;
   display: block;
 }
 
@@ -562,5 +566,454 @@
   .content,
   .bottomContent {
     max-width: 520px;
+  }
+}
+
+/* Desktop — full-viewport cinematic hero (image 2560×1255 ≈ 2.04:1) */
+.desktopBgLayer {
+  display: none;
+}
+
+.heroMedia {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.scrollMouse {
+  display: none;
+}
+
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroShell {
+    padding-bottom: 0;
+  }
+
+  .heroShell::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: min(22vh, 180px);
+    z-index: 4;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(10, 8, 6, 0) 0%,
+      rgba(10, 8, 6, 0.35) 45%,
+      rgba(10, 8, 6, 0.85) 78%,
+      #0a0806 100%
+    );
+  }
+
+  .hero {
+    width: 100%;
+    height: 100svh;
+    min-height: 640px;
+    max-height: none;
+    aspect-ratio: auto;
+    overflow: hidden;
+    /*
+     * Watch circle knobs (desktop).
+     * --watch-size = base diameter (% of media WIDTH)
+     * --watch-grow-* = extra % of media WIDTH added on that side only
+     *   e.g. --watch-grow-top: 3;  --watch-grow-bottom: 2;
+     *   (unitless numbers → cqw; 1 ≈ 1% of the background width)
+     */
+    --watch-x: 60.7955%;
+    --watch-y: 44.2593%;
+    --watch-size: 26.5;
+    --watch-grow-top: 1;
+    --watch-grow-bottom: 1;
+    --watch-grow-left: 0.5;
+    --watch-grow-right: 0.5;
+    --desktop-img-ratio: 4400 / 2160;
+  }
+
+  /*
+   * Cover-sized media plane: same math as object-fit:cover so the
+   * watch hole CSS % always maps to the real image, not the cropped viewport.
+   */
+  .heroMedia {
+    inset: auto;
+    left: 50%;
+    top: 50%;
+    width: max(100%, calc(100svh * var(--desktop-img-ratio)));
+    height: max(100%, calc(100vw / var(--desktop-img-ratio)));
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    isolation: isolate;
+    container-type: size;
+    container-name: hero-media;
+  }
+
+  .bgLayer {
+    display: none;
+  }
+
+  /* Background under the food circle */
+  .desktopBgLayer {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .desktopBg,
+  .desktopBgImg {
+    object-fit: fill;
+    object-position: center center;
+  }
+
+  .desktopBgImg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: fill;
+    image-rendering: auto;
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  /*
+   * Food circle ON TOP of the background.
+   * Width/height use cqw so grow-top/bottom stay in the same % unit as left/right.
+   */
+  .watchCarousel {
+    --watch-w: calc(
+      (var(--watch-size) + var(--watch-grow-left) + var(--watch-grow-right)) * 1cqw
+    );
+    --watch-h: calc(
+      (var(--watch-size) + var(--watch-grow-top) + var(--watch-grow-bottom)) * 1cqw
+    );
+    display: block;
+    z-index: 4;
+    pointer-events: none;
+    left: calc(
+      var(--watch-x) + (var(--watch-grow-right) - var(--watch-grow-left)) * 0.5cqw
+    );
+    top: calc(
+      var(--watch-y) + (var(--watch-grow-bottom) - var(--watch-grow-top)) * 0.5cqw
+    );
+    box-sizing: border-box;
+    width: var(--watch-w);
+    height: var(--watch-h);
+    padding: 0;
+    aspect-ratio: unset;
+    border-radius: 50%;
+    overflow: hidden;
+    transform: translate(-50%, -50%);
+    box-shadow: none;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .watchCarousel .carouselTrack {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: max-content;
+    min-height: 0;
+  }
+
+  .watchCarousel .slide {
+    position: relative;
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .watchCarousel .imageWrap {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .watchTouchZone {
+    --watch-w: calc(
+      (var(--watch-size) + var(--watch-grow-left) + var(--watch-grow-right)) * 1cqw
+    );
+    --watch-h: calc(
+      (var(--watch-size) + var(--watch-grow-top) + var(--watch-grow-bottom)) * 1cqw
+    );
+    display: block;
+    z-index: 5;
+    left: calc(
+      var(--watch-x) + (var(--watch-grow-right) - var(--watch-grow-left)) * 0.5cqw
+    );
+    top: calc(
+      var(--watch-y) + (var(--watch-grow-bottom) - var(--watch-grow-top)) * 0.5cqw
+    );
+    box-sizing: border-box;
+    width: var(--watch-w);
+    height: var(--watch-h);
+    padding: 0;
+    aspect-ratio: unset;
+    transform: translate(-50%, -50%);
+    min-height: 0;
+  }
+
+  .slideImg {
+    object-fit: cover;
+    object-position: center center;
+    transform: none;
+    width: 100%;
+    height: 100%;
+  }
+
+  .carouselTrack {
+    transition: transform 0.85s cubic-bezier(0.33, 0.1, 0.2, 1);
+  }
+
+  .navArrow {
+    display: flex;
+    width: 42px;
+    height: 42px;
+    z-index: 8;
+    background: rgba(10, 8, 6, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  }
+
+  .navArrow:hover {
+    background: rgba(216, 168, 97, 0.28);
+    border-color: rgba(216, 168, 97, 0.55);
+    transform: translateY(-50%) scale(1.05);
+  }
+
+  .navArrowLeft {
+    left: calc(
+      var(--watch-x) -
+        (var(--watch-size) + var(--watch-grow-left) + var(--watch-grow-right)) * 0.52cqw
+    );
+    right: auto;
+  }
+
+  .navArrowRight {
+    left: calc(
+      var(--watch-x) +
+        (var(--watch-size) + var(--watch-grow-left) + var(--watch-grow-right)) * 0.52cqw -
+        42px
+    );
+    right: auto;
+  }
+
+  .content {
+    position: absolute;
+    left: 0;
+    top: 40%;
+    transform: translateY(-50%);
+    max-width: min(520px, 40vw);
+    margin: 0;
+    padding: 0 0 0 clamp(2.5rem, 5vw, 5.5rem);
+    align-items: flex-start;
+    z-index: 5;
+    animation: heroFadeUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .topbar {
+    display: none;
+  }
+
+  .mobileMenu {
+    display: none !important;
+  }
+
+  .heading {
+    text-align: left;
+    margin-bottom: 1.35rem;
+  }
+
+  .eyebrow {
+    font-family: var(--font-body), 'Poppins', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.48em;
+    margin-bottom: 1rem;
+    color: #d8a861;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .title {
+    font-family: var(--font-display), 'Playfair Display', serif;
+    font-size: clamp(3rem, 4.6vw, 4.15rem);
+    font-weight: 700;
+    line-height: 1.02;
+    color: #faf6ee;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 36px rgba(0, 0, 0, 0.55);
+  }
+
+  .subtitle {
+    font-family: var(--font-script), 'Dancing Script', cursive;
+    font-size: clamp(2.75rem, 4.1vw, 3.65rem);
+    font-weight: 700;
+    margin-top: 0.15rem;
+    line-height: 1.12;
+    color: #e0b872;
+    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.45);
+  }
+
+  .subtitle::after {
+    display: none;
+  }
+
+  .tagline {
+    font-family: var(--font-body), 'Poppins', sans-serif;
+    margin-top: 1.2rem;
+    font-size: 1.05rem;
+    font-weight: 400;
+    max-width: 36ch;
+    text-align: left;
+    color: rgba(247, 241, 230, 0.9);
+    letter-spacing: 0.02em;
+    line-height: 1.45;
+  }
+
+  .tagline::after {
+    content: '';
+    display: block;
+    width: 3.5rem;
+    height: 1.5px;
+    margin-top: 1.1rem;
+    background: linear-gradient(90deg, rgba(216, 168, 97, 0.95), transparent);
+  }
+
+  .ctaRow {
+    max-width: 440px;
+    gap: 1rem;
+    margin-top: 0.65rem;
+  }
+
+  .ctaPrimary,
+  .ctaSecondary {
+    font-family: var(--font-body), 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 1rem 1.35rem;
+    border-radius: 11px;
+    letter-spacing: 0.015em;
+    transition: transform 0.18s ease, filter 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+  }
+
+  .ctaPrimary {
+    color: #1a1208;
+    box-shadow:
+      0 4px 20px rgba(201, 149, 63, 0.42),
+      inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  }
+
+  .ctaSecondary {
+    background: rgba(10, 8, 6, 0.42);
+    border-color: rgba(216, 168, 97, 0.65);
+  }
+
+  .ctaPrimary:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.07);
+    box-shadow: 0 8px 28px rgba(201, 149, 63, 0.5);
+  }
+
+  .ctaSecondary:hover {
+    transform: translateY(-2px);
+    border-color: rgba(224, 184, 114, 0.9);
+    background: rgba(20, 14, 8, 0.55);
+  }
+
+  .watchSpacer {
+    display: none;
+  }
+
+  .bottomContent {
+    position: absolute;
+    left: clamp(2.5rem, 5vw, 5.5rem);
+    right: auto;
+    bottom: max(5.5rem, 9vh);
+    top: auto;
+    max-width: min(460px, 36vw);
+    margin: 0;
+    padding: 0;
+    z-index: 5;
+    animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+  }
+
+  .swipeHint {
+    display: none;
+  }
+
+  .features {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    gap: 1.75rem;
+    justify-content: flex-start;
+  }
+
+  .feature {
+    flex: 0 0 auto;
+    gap: 0.55rem;
+    color: #d8a861;
+  }
+
+  .feature:not(:last-child) {
+    border-right: none;
+  }
+
+  .feature svg {
+    width: 22px;
+    height: 22px;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+  }
+
+  .feature p {
+    font-family: var(--font-body), 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #d8a861;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+  }
+
+  .scrollDown {
+    display: none;
+  }
+
+  .scrollMouse {
+    display: flex;
+    position: absolute;
+    left: 50%;
+    bottom: 1.75rem;
+    transform: translateX(-50%);
+    z-index: 6;
+    color: #d8a861;
+    opacity: 0.85;
+    animation: bounce 2.2s ease-in-out infinite;
+  }
+
+  .scrollMouse:hover {
+    opacity: 1;
   }
 }

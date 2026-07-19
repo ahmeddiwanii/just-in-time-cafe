@@ -8,7 +8,7 @@ Built with Next.js 16, React 18, and Tailwind CSS 4.
 
 - **Hero with watch carousel** — food photos rotate behind a branded mobile background with touch swipe and auto-play
 - **Flip-book menu** — swipeable category pages with a book-style page turn animation
-- **Responsive layouts** — dedicated mobile and tablet experiences
+- **Responsive layouts** — dedicated desktop,mobile and tablet experiences
 - **Gallery & contact** — photo gallery, about section, testimonials, and contact form
 
 ## Tech stack
@@ -39,7 +39,7 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) or your machine's LAN IP (e.g. `http://192.168.1.16:3000`) on mobile devices.
+Open [http://localhost:3000](http://localhost:3000) or your machine's LAN IP  on mobile devices.
 
 > Use `pnpm dev` for hot reload. Use `pnpm preview:mobile` only for production-like testing.
 

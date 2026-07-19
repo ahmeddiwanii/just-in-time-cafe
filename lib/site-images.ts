@@ -43,23 +43,79 @@ export const SITE_IMAGES = {
 } as const satisfies Record<string, SiteImage>
 
 /**
- * Hero watch carousel — tight, centered food shots that crop well in a circle.
- * Avoid wide interiors, façades, and busy buffet lines.
+ * Hero watch carousel — square, center-cropped slides tuned for the circular hole.
  */
 export const HERO_SLIDES: SiteImage[] = [
-  SITE_IMAGES.poulet,
-  SITE_IMAGES.pizza,
-  SITE_IMAGES.dessert,
-  SITE_IMAGES.paella,
+  {
+    src: '/watch-slides/poulet.png',
+    alt: SITE_IMAGES.poulet.alt,
+    caption: SITE_IMAGES.poulet.caption,
+  },
+  {
+    src: '/watch-slides/pizza.png',
+    alt: SITE_IMAGES.pizza.alt,
+    caption: SITE_IMAGES.pizza.caption,
+  },
+  {
+    src: '/watch-slides/dessert.png',
+    alt: SITE_IMAGES.dessert.alt,
+    caption: SITE_IMAGES.dessert.caption,
+  },
+  {
+    src: '/watch-slides/paella.png',
+    alt: SITE_IMAGES.paella.alt,
+    caption: SITE_IMAGES.paella.caption,
+  },
 ]
 
-/** Gallery — full venue story: food variety + ambiance + exterior */
+/**
+ * Gallery uses compressed WebP under /gallery for scroll performance
+ * (next/image is unoptimized in this project).
+ */
 export const GALLERY_IMAGES: SiteImage[] = [
-  SITE_IMAGES.facade,
-  SITE_IMAGES.salle,
-  SITE_IMAGES.buffet,
-  SITE_IMAGES.poulet,
-  SITE_IMAGES.paella,
-  SITE_IMAGES.pizza,
-  SITE_IMAGES.dessert,
+  {
+    src: '/gallery/collage.webp',
+    alt: 'Collage Just In Time — brunch en photo, brochettes et escalopes dorées',
+    caption: 'Autour de la table',
+  },
+  {
+    src: '/gallery/lantern.webp',
+    alt: 'Lanterne vintage allumée sur le mur en bois — ambiance Just In Time',
+    caption: 'Ambiance du soir',
+  },
+  {
+    src: '/gallery/salle.webp',
+    alt: SITE_IMAGES.salle.alt,
+    caption: SITE_IMAGES.salle.caption,
+  },
+  {
+    src: '/gallery/buffet.webp',
+    alt: SITE_IMAGES.buffet.alt,
+    caption: SITE_IMAGES.buffet.caption,
+  },
+  {
+    src: '/gallery/poulet.webp',
+    alt: SITE_IMAGES.poulet.alt,
+    caption: SITE_IMAGES.poulet.caption,
+  },
+  {
+    src: '/gallery/paella.webp',
+    alt: SITE_IMAGES.paella.alt,
+    caption: SITE_IMAGES.paella.caption,
+  },
+  {
+    src: '/gallery/pizza.webp',
+    alt: SITE_IMAGES.pizza.alt,
+    caption: SITE_IMAGES.pizza.caption,
+  },
+  {
+    src: '/gallery/dessert.webp',
+    alt: SITE_IMAGES.dessert.alt,
+    caption: SITE_IMAGES.dessert.caption,
+  },
+  {
+    src: '/gallery/facade.webp',
+    alt: SITE_IMAGES.facade.alt,
+    caption: SITE_IMAGES.facade.caption,
+  },
 ]

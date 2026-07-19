@@ -1,13 +1,15 @@
-'use client';
+'use client'
 
-import Image from 'next/image';
-import Hero from './components/Hero';
-import SiteNav from './components/SiteNav';
-import MenuSection from './components/MenuSection';
-import MapSection from './components/MapSection';
-import { GALLERY_IMAGES, SITE_IMAGES } from '@/lib/site-images';
-import { Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import Image from 'next/image'
+import Hero from './components/Hero'
+import SiteNav from './components/SiteNav'
+import MenuSection from './components/MenuSection'
+import GallerySection from './components/GallerySection'
+import MapSection from './components/MapSection'
+import { SITE_IMAGES } from '@/lib/site-images'
+import { VENUE, WHATSAPP, SOCIAL } from '@/lib/site-location'
+import { Star, Phone, MessageCircle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default function Home() {
   return (
@@ -17,37 +19,7 @@ export default function Home() {
 
       <MenuSection />
 
-      {/* Gallery Section */}
-      <section id="gallery" className="py-24 px-4 bg-card/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 animate-fade-in">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-              Galerie
-            </h2>
-            <div className="w-20 h-1 bg-accent mx-auto" />
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {GALLERY_IMAGES.map((photo) => (
-              <div
-                key={photo.src}
-                className="group relative aspect-[3/4] rounded-lg overflow-hidden border border-border hover:border-accent transition-all duration-300"
-              >
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 pt-12">
-                  <p className="font-serif text-lg text-white">{photo.caption}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <GallerySection />
 
       {/* About Section */}
       <section id="about" className="py-24 px-4">
@@ -148,37 +120,45 @@ export default function Home() {
             </h2>
             <div className="w-20 h-1 bg-accent mx-auto" />
             <p className="text-muted-foreground mt-4 max-w-lg mx-auto">
-              Une question, une réservation ou un événement ? Écrivez-nous — nous vous répondrons rapidement.
+              Une question, une réservation ou un événement ? Appelez-nous ou écrivez-nous sur WhatsApp.
             </p>
           </div>
 
-          <div className="bg-card border border-border p-8 rounded-lg">
-            <form className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <input
-                  type="text"
-                  placeholder="Votre nom"
-                  className="bg-background border border-border px-4 py-3 rounded text-foreground placeholder-muted-foreground focus:outline-none focus:border-accent transition"
-                />
-                <input
-                  type="email"
-                  placeholder="Votre email"
-                  className="bg-background border border-border px-4 py-3 rounded text-foreground placeholder-muted-foreground focus:outline-none focus:border-accent transition"
-                />
-              </div>
-              <textarea
-                placeholder="Votre message"
-                rows={5}
-                className="w-full bg-background border border-border px-4 py-3 rounded text-foreground placeholder-muted-foreground focus:outline-none focus:border-accent transition"
-              />
-              <Button
-                type="submit"
-                size="lg"
-                className="w-full bg-accent text-accent-foreground hover:bg-accent/90 font-medium"
-              >
-                Envoyer le message
-              </Button>
-            </form>
+          <div className="grid sm:grid-cols-2 gap-4 mb-10">
+            <a
+              href={VENUE.phoneHref}
+              className="bg-card border border-border p-6 rounded-lg text-center hover:border-accent transition-all"
+            >
+              <Phone className="w-7 h-7 text-accent mx-auto mb-3" />
+              <h3 className="font-serif font-bold mb-1">Téléphone</h3>
+              <p className="text-sm text-muted-foreground">{VENUE.phone}</p>
+            </a>
+            <a
+              href={WHATSAPP.reserve}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-card border border-border p-6 rounded-lg text-center hover:border-accent transition-all"
+            >
+              <MessageCircle className="w-7 h-7 text-accent mx-auto mb-3" />
+              <h3 className="font-serif font-bold mb-1">WhatsApp</h3>
+              <p className="text-sm text-muted-foreground">Réserver une table</p>
+            </a>
+          </div>
+
+          <div className="bg-card border border-border p-8 rounded-lg text-center">
+            <h3 className="font-serif text-2xl font-bold mb-3">Réserver maintenant</h3>
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+              Cliquez pour ouvrir WhatsApp avec un message de réservation prérempli.
+            </p>
+            <Button
+              asChild
+              size="lg"
+              className="w-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90 font-medium"
+            >
+              <a href={WHATSAPP.reserve} target="_blank" rel="noopener noreferrer">
+                Réserver sur WhatsApp
+              </a>
+            </Button>
           </div>
         </div>
       </section>
@@ -194,10 +174,10 @@ export default function Home() {
             <div>
               <h4 className="font-bold mb-4 text-sm">Menu</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#menu" className="hover:text-accent transition">Café</a></li>
-                <li><a href="#menu" className="hover:text-accent transition">Petit-déjeuner</a></li>
-                <li><a href="#menu" className="hover:text-accent transition">Plats</a></li>
-                <li><a href="#menu" className="hover:text-accent transition">Desserts</a></li>
+                <li><a href="#menu" className="hover:text-accent transition">Café &amp; Jus</a></li>
+                <li><a href="#menu" className="hover:text-accent transition">Pizza &amp; Pâtes</a></li>
+                <li><a href="#menu" className="hover:text-accent transition">Grillades &amp; Poisson</a></li>
+                <li><a href="#menu" className="hover:text-accent transition">Crêpes &amp; Gaufres</a></li>
               </ul>
             </div>
             <div>
@@ -222,13 +202,26 @@ export default function Home() {
           <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
             <p>&copy; 2026 Just In Time. Tous droits réservés.</p>
             <div className="flex gap-6 mt-4 md:mt-0">
-              <a href="#" className="hover:text-accent transition">Instagram</a>
-              <a href="#" className="hover:text-accent transition">Facebook</a>
-              <a href="#" className="hover:text-accent transition">Twitter</a>
+              <a
+                href={SOCIAL.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent transition"
+              >
+                Instagram
+              </a>
+              <a
+                href={SOCIAL.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent transition"
+              >
+                Facebook
+              </a>
             </div>
           </div>
         </div>
       </footer>
     </div>
-  );
+  )
 }

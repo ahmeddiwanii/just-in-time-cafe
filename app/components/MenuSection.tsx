@@ -123,12 +123,16 @@ export default function MenuSection() {
                 </header>
 
                 <ul className={styles.itemList}>
-                  {page.items.map((item) => (
-                    <li key={item.name} className={styles.item}>
+                  {page.items.map((item, i) => (
+                    <li key={`${item.name}-${i}`} className={styles.item}>
                       <div className={styles.itemRow}>
                         <span className={styles.itemName}>{item.name}</span>
-                        <span className={styles.itemDots} aria-hidden="true" />
-                        <span className={styles.itemPrice}>{formatPrice(item.price)}</span>
+                        {item.price !== undefined && (
+                          <>
+                            <span className={styles.itemDots} aria-hidden="true" />
+                            <span className={styles.itemPrice}>{formatPrice(item.price)}</span>
+                          </>
+                        )}
                       </div>
                       {item.note && <p className={styles.itemNote}>{item.note}</p>}
                     </li>

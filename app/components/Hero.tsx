@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { useSwipeElement } from '@/lib/use-swipe'
 import { HERO_SLIDES } from '@/lib/site-images'
+import { WHATSAPP } from '@/lib/site-location'
 import styles from './Hero.module.css'
 
 const SLIDE_COUNT = HERO_SLIDES.length
@@ -113,8 +114,38 @@ export default function Hero() {
   return (
     <section className={styles.heroShell}>
       <div className={styles.hero}>
-      {/* Food carousel — behind the PNG, shows through transparent watch hole */}
-      <div ref={viewportRef} className={styles.watchCarousel}>
+      {/*
+        Layer order inside heroMedia (bottom → top):
+        1) desktop background
+        2) food circle ON TOP (tune with --watch-grow-* %)
+        3) touch zone + arrows
+      */}
+      <div className={styles.heroMedia}>
+      <div className={styles.bgLayer} aria-hidden="true">
+        <Image
+          src="/bg-mobile.png"
+          alt=""
+          fill
+          priority
+          className={styles.mobileBg}
+          draggable={false}
+        />
+      </div>
+
+      <div className={styles.desktopBgLayer} aria-hidden="true">
+        <img
+          src="/bg-desktop.png"
+          alt=""
+          className={styles.desktopBgImg}
+          draggable={false}
+          decoding="async"
+          fetchPriority="high"
+          width={4400}
+          height={2160}
+        />
+      </div>
+
+      <div ref={viewportRef} className={styles.watchCarousel} aria-hidden="true">
         <div
           ref={trackRef}
           className={`${styles.carouselTrack} ${animate ? '' : styles.carouselTrackInstant}`}
@@ -145,19 +176,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Full mobile background — decorative only, never blocks touches */}
-      <div className={styles.bgLayer} aria-hidden="true">
-        <Image
-          src="/bg-mobile.png"
-          alt=""
-          fill
-          priority
-          className={styles.mobileBg}
-          draggable={false}
-        />
-      </div>
-
-      {/* Transparent touch layer on top of watch — receives swipes on mobile */}
       <div
         ref={watchRef}
         className={styles.watchTouchZone}
@@ -184,6 +202,7 @@ export default function Hero() {
           <polyline points="9 18 15 12 9 6" />
         </svg>
       </button>
+      </div>
 
       {/* Top content overlay */}
       <div className={styles.content}>
@@ -287,7 +306,12 @@ export default function Hero() {
               </svg>
               Découvrir le menu
             </a>
-            <a href="#contact" className={styles.ctaSecondary}>
+            <a
+              href={WHATSAPP.reserve}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.ctaSecondary}
+            >
               <svg
                 width="17"
                 height="17"
@@ -408,6 +432,13 @@ export default function Hero() {
             </svg>
           </a>
         </div>
+
+      <a href="#menu" className={styles.scrollMouse} aria-label="Défiler vers le menu">
+        <svg width="22" height="34" viewBox="0 0 22 34" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <rect x="1" y="1" width="20" height="32" rx="10" />
+          <line x1="11" y1="8" x2="11" y2="14" strokeLinecap="round" />
+        </svg>
+      </a>
       </div>
     </section>
   )
